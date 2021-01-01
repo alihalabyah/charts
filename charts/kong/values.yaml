@@ -25,6 +25,10 @@ deployment:
   #   - name: sidecar
   #     image: sidecar:latest
 
+# Override namepsace for Kong chart resources. By default, the chart creates resources in the release namespace.
+# This may not be desirable when using this chart as a dependency.
+# namespace: "example"
+
 # -----------------------------------------------------------------------------
 # Kong parameters
 # -----------------------------------------------------------------------------
@@ -369,6 +373,14 @@ ingressController:
     successThreshold: 1
     failureThreshold: 3
   resources: {}
+  # Example reasonable setting for "resources":
+  # resources:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
 
 # -----------------------------------------------------------------------------
 # Postgres sub-chart parameters
@@ -480,6 +492,8 @@ deploymentAnnotations:
   traffic.sidecar.istio.io/includeInboundPorts: ""
 
 # Enable autoscaling using HorizontalPodAutoscaler
+# When configuring an HPA, you must set resource requests on all containers via
+# "resources" and, if using the controller, "ingressController.resources" in values.yaml
 autoscaling:
   enabled: false
   minReplicas: 2
